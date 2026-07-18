@@ -52,7 +52,7 @@
     body::before{ animation:none; opacity:.7 } }
 
   /* ── Masthead ─────────────────────────────────────────── */
-  header{ text-align:center; margin-bottom:clamp(1.6rem,3.6vw,3rem); }
+  header{ text-align:center; margin-bottom:clamp(.9rem,2.2vw,1.6rem); }
   h1{
     font-weight:600; letter-spacing:.015em; margin:0;
     font-size:clamp(2.1rem,4.8vw,3.4rem);
@@ -60,8 +60,8 @@
     text-shadow:0 1px 0 #6b5220, 0 2px 10px rgba(0,0,0,.6);
   }
   h1 .the{ font-size:.6em; font-variant:small-caps; letter-spacing:.08em; opacity:.88; margin-right:.06em; }
-  .hint{ margin:1rem 0 0; font-variant:small-caps; letter-spacing:.2em;
-         font-size:1.02rem; color:var(--gold); opacity:.72; }
+  .hint{ margin:.55rem 0 0; font-variant:small-caps; letter-spacing:.2em;
+         font-size:1.14rem; color:var(--gold); opacity:.75; }
   .hint::before,.hint::after{ content:"·"; margin:0 .7em; opacity:.7; }
 
   /* ── Bookcase ─────────────────────────────────────────── */
@@ -114,7 +114,7 @@
     .book.filler{ display:none; }
     .book.filler.mkeep{ display:block; }
     /* keep the invitation on one line */
-    .hint{ font-size:.82rem; letter-spacing:.14em; }
+    .hint{ font-size:.92rem; letter-spacing:.14em; }
   }
 
   /* shelf board: joined into the case — full-bleed to the stiles (cancels
@@ -188,20 +188,20 @@
     text-decoration:none; color:var(--gold);
     transform-origin:50% 100%;
     background-image:
-      /* headcap: the spine's cylinder turning over at the very top */
-      radial-gradient(100% calc(20 * var(--u)) at 50% 0, rgba(255,240,210,.13), rgba(255,240,210,0) 72%),
+      /* headcap: the cylinder turning over at the top — centre-weighted, so
+         the top highlight curves WITH the spine (never a flat bright band) */
+      radial-gradient(80% calc(24 * var(--u)) at 50% 0, rgba(255,240,210,.17), rgba(255,240,210,0) 70%),
       var(--grain),
       linear-gradient(90deg,
         rgba(0,0,0,.6) 0%, rgba(0,0,0,.12) 12%,
         var(--c1) 44%, var(--c1) 56%,
         rgba(0,0,0,.16) 88%, rgba(0,0,0,.66) 100%),
       linear-gradient(180deg,
-        color-mix(in srgb, var(--c1) 76%, #000 5%) 0%,
-        color-mix(in srgb, var(--c1) 90%, #fff 8%) 8%,
-        var(--c1) 20%, var(--c2) 90%,
+        color-mix(in srgb, var(--c1) 80%, #000 8%) 0%,
+        var(--c1) 12%, var(--c2) 90%,
         color-mix(in srgb, var(--c2) 70%, #000 20%) 100%);
     box-shadow:
-      inset 0 7px 7px -5px rgba(255,235,200,.26),
+      inset 0 6px 6px -5px rgba(255,235,200,.09),
       inset 0 -8px 8px -5px rgba(0,0,0,.42),
       inset 0 0 0 1px rgba(0,0,0,.4),
       inset 2px 0 3px rgba(255,255,255,.07),
@@ -309,7 +309,7 @@
     .book:hover{
       transform:translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg);
       box-shadow:
-        inset 0 7px 7px -5px rgba(255,235,200,.3),
+        inset 0 6px 6px -5px rgba(255,235,200,.12),
         inset 0 -8px 8px -5px rgba(0,0,0,.4),
         inset 0 0 0 1px rgba(0,0,0,.3),
         inset 2px 0 3px rgba(255,255,255,.1),
@@ -356,19 +356,29 @@
     margin-left:calc(13 * var(--u)); margin-right:calc(-3 * var(--u)); z-index:2; }
 
   footer{ margin-top:clamp(2rem,4vw,3.4rem); text-align:center; }
-  /* brass plaque on the front of the case */
-  footer a{ display:inline-block; color:var(--gold); text-decoration:none;
-    font-variant:small-caps; letter-spacing:.16em; font-size:.92rem;
-    padding:.5em 1.3em; border:1px solid rgba(216,180,90,.45); border-radius:4px;
-    background:linear-gradient(180deg, rgba(216,180,90,.16), rgba(216,180,90,.04));
-    box-shadow:inset 0 1px 0 rgba(255,235,190,.28), 0 2px 6px rgba(0,0,0,.5);
-    transition:color .2s, background .2s, box-shadow .2s; }
-  footer a:hover{ color:var(--gold-bright);
-    background:linear-gradient(180deg, rgba(216,180,90,.24), rgba(216,180,90,.08));
-    box-shadow:inset 0 1px 0 rgba(255,235,190,.34), 0 3px 9px rgba(0,0,0,.55); }
-  /* the plaque presses in like everything else in this room */
+  /* brass plaque on the front of the case: brushed-metal sheen bands, not a
+     flat button fill */
+  footer a{ display:inline-block; position:relative; overflow:hidden;
+    color:#f0d78e; text-decoration:none;
+    font-variant:small-caps; font-weight:600; letter-spacing:.16em; font-size:1rem;
+    padding:.55em 1.4em; border:1px solid rgba(216,180,90,.5); border-radius:4px;
+    background:
+      linear-gradient(100deg, rgba(216,180,90,.10) 0%, rgba(255,235,190,.22) 28%,
+        rgba(216,180,90,.07) 52%, rgba(255,235,190,.15) 74%, rgba(216,180,90,.10) 100%),
+      linear-gradient(180deg, rgba(216,180,90,.12), rgba(216,180,90,.03));
+    box-shadow:inset 0 1px 0 rgba(255,235,190,.3), 0 2px 6px rgba(0,0,0,.5);
+    transition:color .2s, box-shadow .2s, filter .2s; }
+  footer a:hover{ color:var(--gold-bright); filter:brightness(1.12);
+    box-shadow:inset 0 1px 0 rgba(255,235,190,.36), 0 3px 9px rgba(0,0,0,.55); }
+  /* press: the plaque gives, and a shimmer sweeps across the metal */
   footer a:active{ transform:translateY(1px);
     box-shadow:inset 0 1px 0 rgba(255,235,190,.2), 0 1px 3px rgba(0,0,0,.5); }
+  footer a::after{ content:""; position:absolute; top:-20%; bottom:-20%;
+    left:-45%; width:36%; transform:skewX(-18deg); opacity:0; pointer-events:none;
+    background:linear-gradient(105deg,
+      rgba(255,245,210,0), rgba(255,245,210,.38), rgba(255,245,210,0)); }
+  footer a:active::after{ animation:plaque-shine .45s ease-out; }
+  @keyframes plaque-shine{ 0%{ left:-45%; opacity:1 } 100%{ left:115%; opacity:0 } }
 
   @media (prefers-reduced-motion:reduce){
     .book, .row > .book{ transition:box-shadow .2s, filter .2s; animation:none; }
