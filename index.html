@@ -59,9 +59,12 @@
 
   /* ── Bookcase ─────────────────────────────────────────── */
   /* the case: wooden frame + dark back panel that grounds the shelves */
-  .bookcase{ width:100%; max-width:800px; display:flex; flex-direction:column;
+  /* case width derives from the books (both rows total 676u), so the shelves
+     are always full edge-to-edge: 676 content + 36 borders + 16 padding */
+  .bookcase{ width:calc(728 * var(--u)); max-width:calc(100vw - 2rem);
+    display:flex; flex-direction:column;
     gap:calc(26 * var(--u));
-    padding:calc(30 * var(--u)) calc(20 * var(--u)) calc(4 * var(--u));
+    padding:calc(30 * var(--u)) calc(8 * var(--u)) calc(4 * var(--u));
     border:calc(18 * var(--u)) solid;
     border-top-width:calc(14 * var(--u));
     border-bottom-width:calc(22 * var(--u));
@@ -76,14 +79,14 @@
   .shelf{ position:relative; }
   /* the case stiles shade the outermost volumes and the shelf-board ends —
      seats both IN the case */
-  .shelf::after{ content:""; position:absolute; inset:0 calc(-20 * var(--u));
+  .shelf::after{ content:""; position:absolute; inset:0 calc(-8 * var(--u));
     pointer-events:none; z-index:3;
     background:linear-gradient(90deg, rgba(0,0,0,.36), transparent 8%, transparent 92%, rgba(0,0,0,.36)); }
 
   .row{
     display:flex; align-items:flex-end; justify-content:center;
     gap:calc(3 * var(--u));
-    padding:0 calc(10 * var(--u));
+    padding:0 calc(4 * var(--u));
     min-height:calc(398 * var(--u));
     /* one shared viewpoint — the viewer stands at the centre of the case, so
        outer volumes tip slightly off-axis. Distance is generous so the skew
@@ -91,12 +94,15 @@
     perspective:2000px; perspective-origin:50% 42%;
     overflow:visible;
   }
-  /* Mobile: no panning — the decorative filler volumes step aside and the
-     whole case scales to the viewport, so every clickable tome is visible
-     on load. (The lower --u floor is what lets the case shrink to fit.) */
+  /* Mobile: no panning — most filler volumes step aside (three .mkeep ones
+     stay: one on the top shelf, the two ends of the bottom shelf, so both
+     rows stay full edge-to-edge at 558/562u) and the case scales to span
+     the viewport, so every clickable tome is visible on load. */
   @media (max-width:680px){
-    :root{ --u:clamp(0.4px, 0.115vw + 0.09px, 1px); }
+    :root{ --u:clamp(0.4px, calc((100vw - 2rem)/614), 0.9px); }
+    .bookcase{ width:calc(614 * var(--u)); }
     .book.filler{ display:none; }
+    .book.filler.mkeep{ display:block; }
     /* keep the invitation on one line */
     .hint{ font-size:.82rem; letter-spacing:.14em; }
   }
@@ -105,7 +111,7 @@
      the case's side padding), square butt joints, the frame's wood tones,
      grain running along the board's length */
   .plank{ height:calc(30 * var(--u)); position:relative;
-    margin:0 calc(-20 * var(--u));
+    margin:0 calc(-8 * var(--u));
     background:
       linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,.45)),
       repeating-linear-gradient(0deg, rgba(255,220,170,.04) 0 2px, rgba(0,0,0,.06) 2px 5px),
@@ -325,7 +331,7 @@
     <!-- Top shelf -->
     <section class="shelf" aria-label="Top shelf">
       <div class="row">
-        <span class="book filler n3 band-bold tex-fine" aria-hidden="true" style="--w:48;--h:300;--c1:#4a3524;--c2:#281a0e"></span>
+        <span class="book filler mkeep n3 band-bold tex-fine" aria-hidden="true" style="--w:48;--h:300;--c1:#4a3524;--c2:#281a0e"></span>
         <a class="book n5 band-wide tex-coarse f-cinzel" style="--w:92;--h:374;--c1:#6d221d;--c2:#420f0e;--fs:14" href="https://ihavedna.github.io/field-library-wiki/about-the-library/" aria-label="About the Library"><span class="title"><span>About</span><span class="mnr">the</span><span>Library</span></span></a>
         <a class="book n4 band-skinny" style="--w:74;--h:340;--c1:#2f4a33;--c2:#16281b;--fs:14" href="https://ihavedna.github.io/field-library-wiki/delve-reports/" aria-label="Delve Reports"><span class="title"><span>Delve</span><span>Reports</span></span></a>
         <span class="book filler n3 band-wide tex-pebbled lean-r" aria-hidden="true" style="--w:44;--h:308;--c1:#3a2230;--c2:#20101b"></span>
@@ -341,7 +347,7 @@
     <!-- Bottom shelf -->
     <section class="shelf" aria-label="Bottom shelf">
       <div class="row">
-        <span class="book filler n4 band-skinny tex-pebbled" aria-hidden="true" style="--w:46;--h:312;--c1:#37301f;--c2:#1d160c"></span>
+        <span class="book filler mkeep n4 band-skinny tex-pebbled" aria-hidden="true" style="--w:54;--h:312;--c1:#37301f;--c2:#1d160c"></span>
         <a class="book n5 band-bold tex-fine" style="--w:96;--h:368;--c1:#33472c;--c2:#182615;--fs:12" href="https://ihavedna.github.io/field-library-wiki/publications-and-personal-works/" aria-label="Publications and Personal Works"><span class="title"><span>Publications</span><span class="mnr">and</span><span>Personal</span><span class="mid">Works</span></span></a>
         <a class="book n5 tex-coarse" style="--w:104;--h:356;--c1:#7a4a24;--c2:#472811;--fs:13" href="https://ihavedna.github.io/field-library-wiki/additional-references-and-documents/" aria-label="Additional References and Documents"><span class="title"><span>Additional</span><span>References</span><span class="mnr">and</span><span>Documents</span></span></a>
         <span class="book filler n3 band-wide" aria-hidden="true" style="--w:44;--h:330;--c1:#522026;--c2:#2c0f14"></span>
@@ -349,7 +355,7 @@
         <a class="book n3 band-skinny tex-fine vert f-cormorant" style="--w:74;--h:336;--c1:#2a3550;--c2:#141b30" href="https://ihavedna.github.io/field-library-wiki/artifacts/" aria-label="Artifacts"><span class="title"><span>Artifacts</span></span></a>
         <span class="book filler n3 band-bold tex-coarse lean-l" aria-hidden="true" style="--w:54;--h:322;--c1:#4a3a24;--c2:#271c0e"></span>
         <a class="book n4 band-bold tex-coarse" style="--w:74;--h:348;--c1:#8a5a2c;--c2:#523216;--fs:14" href="https://ihavedna.github.io/field-library-wiki/recent-changes/" aria-label="Recent Changes"><span class="title"><span>Recent</span><span>Changes</span></span></a>
-        <span class="book filler n5 tex-pebbled" aria-hidden="true" style="--w:44;--h:316;--c1:#3e2b1a;--c2:#20140a"></span>
+        <span class="book filler mkeep n5 tex-pebbled" aria-hidden="true" style="--w:54;--h:316;--c1:#3e2b1a;--c2:#20140a"></span>
       </div>
       <div class="plank"></div>
     </section>
