@@ -113,6 +113,10 @@
     .bookcase{ width:calc(614 * var(--u)); }
     .book.filler{ display:none; }
     .book.filler.mkeep{ display:block; }
+    /* ?preview mode: rehearse a fuller shelf — the leaning volume swaps in
+       for the bottom-right filler so its behaviour can be tested on mobile */
+    .leaners-live .book.filler.lean-l{ display:block; }
+    .leaners-live .shelf:nth-of-type(2) .row > :last-child{ display:none; }
     /* keep the invitation on one line */
     .hint{ font-size:.92rem; letter-spacing:.14em; }
   }
@@ -377,8 +381,11 @@
 
   /* Leaning volumes, ready for future links: hovering eases them toward
      upright as they pull from the shelf; a click brings them fully upright
-     and well out. (Until they gain hrefs, a click previews the pull.) */
-  .book.lean-r, .book.lean-l{ pointer-events:auto; cursor:pointer; }
+     and well out. In PRODUCTION the filler leaners stay inert — they become
+     interactive only in ?preview mode (html.leaners-live) or once they are
+     converted to real <a class="book lean-*"> links. */
+  .leaners-live .book.filler.lean-r, .leaners-live .book.filler.lean-l{
+    pointer-events:auto; cursor:pointer; }
   @media (hover:hover){
     .book.lean-r:hover{ z-index:6;
       transform:rotate(1.5deg) translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg); }
@@ -577,19 +584,23 @@
     });
     var plaque = document.querySelector('footer a');
     if (plaque) depart(plaque, 'shining', 470);
-    /* Leaning volumes: preview of their future link behaviour — a click
-       pulls them fully upright and out, then (nowhere to go yet) they
-       settle back. When they gain hrefs, convert them to
-       <a class="book lean-*" href> and the departure handler above takes
-       over; this preview skips any leaner that has become a real link. */
-    document.querySelectorAll('.book.lean-r, .book.lean-l').forEach(function (b) {
-      if (b.tagName === 'A') return;
-      b.addEventListener('click', function () {
-        if (b.classList.contains('pulling')) return;
-        b.classList.add('pulling');
-        setTimeout(function () { b.classList.remove('pulling'); }, 900);
+    /* Leaning volumes: inert in production. Add ?preview to the URL to
+       rehearse their future link behaviour — hover eases them upright, a
+       click pulls them fully out, then (nowhere to go yet) they settle
+       back; on mobile the lean-l swaps onto the shelf. When they gain
+       hrefs, convert them to <a class="book lean-*" href> and the
+       departure handler above takes over with no flag needed. */
+    if (new URLSearchParams(location.search).has('preview')) {
+      document.documentElement.classList.add('leaners-live');
+      document.querySelectorAll('.book.lean-r, .book.lean-l').forEach(function (b) {
+        if (b.tagName === 'A') return;
+        b.addEventListener('click', function () {
+          if (b.classList.contains('pulling')) return;
+          b.classList.add('pulling');
+          setTimeout(function () { b.classList.remove('pulling'); }, 900);
+        });
       });
-    });
+    }
     /* back-navigation (bfcache) must not restore a book mid-departure */
     window.addEventListener('pageshow', function () {
       document.querySelectorAll('.pulling, .shining').forEach(function (el) {
