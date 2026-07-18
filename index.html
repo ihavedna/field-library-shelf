@@ -375,6 +375,20 @@
   .book.lean-l{ transform:rotate(-3deg); transform-origin:0 100%;
     margin-left:calc(13 * var(--u)); margin-right:calc(-3 * var(--u)); z-index:2; }
 
+  /* Leaning volumes, ready for future links: hovering eases them toward
+     upright as they pull from the shelf; a click brings them fully upright
+     and well out. (Until they gain hrefs, a click previews the pull.) */
+  .book.lean-r, .book.lean-l{ pointer-events:auto; cursor:pointer; }
+  @media (hover:hover){
+    .book.lean-r:hover{ z-index:6;
+      transform:rotate(1.5deg) translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg); }
+    .book.lean-l:hover{ z-index:6;
+      transform:rotate(-1deg) translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg); }
+  }
+  .book.lean-r.pulling, .book.lean-l.pulling{
+    transform:rotate(0deg) translateY(calc(-26 * var(--u))) translateZ(46px) rotateX(-8deg);
+    transition-duration:.32s; filter:brightness(1.14); z-index:7; }
+
   footer{ margin-top:clamp(1.3rem,2.6vw,2.2rem); text-align:center; }
   /* brass plaque on the front of the case: brushed-metal sheen bands, not a
      flat button fill */
@@ -563,6 +577,19 @@
     });
     var plaque = document.querySelector('footer a');
     if (plaque) depart(plaque, 'shining', 470);
+    /* Leaning volumes: preview of their future link behaviour — a click
+       pulls them fully upright and out, then (nowhere to go yet) they
+       settle back. When they gain hrefs, convert them to
+       <a class="book lean-*" href> and the departure handler above takes
+       over; this preview skips any leaner that has become a real link. */
+    document.querySelectorAll('.book.lean-r, .book.lean-l').forEach(function (b) {
+      if (b.tagName === 'A') return;
+      b.addEventListener('click', function () {
+        if (b.classList.contains('pulling')) return;
+        b.classList.add('pulling');
+        setTimeout(function () { b.classList.remove('pulling'); }, 900);
+      });
+    });
     /* back-navigation (bfcache) must not restore a book mid-departure */
     window.addEventListener('pageshow', function () {
       document.querySelectorAll('.pulling, .shining').forEach(function (el) {
