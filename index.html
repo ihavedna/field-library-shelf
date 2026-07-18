@@ -71,9 +71,7 @@
     border-style:solid;
     border-width:0 calc(18 * var(--u));
     border-image:linear-gradient(180deg,#6b4726 0%,#4a2f1a 35%,#2a1a0d 100%) 1;
-    background:
-      linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,0) 12%),
-      linear-gradient(180deg, #241509 0%, #190e06 100%);
+    background:linear-gradient(180deg, #241509 0%, #190e06 100%);
     box-shadow:
       inset 0 0 calc(44 * var(--u)) rgba(0,0,0,.55),
       0 36px 64px -28px rgba(0,0,0,.9);
@@ -123,10 +121,17 @@
       inset 0 -3px 6px rgba(0,0,0,.5),
       0 12px 18px -10px rgba(0,0,0,.7);
   }
+  /* the board's under-edge IS its cast shadow: a solid front edge that
+     fades smoothly to nothing over the back panel — one continuous falloff,
+     no seam where a separate drop-shadow would begin */
   .plank::after{ content:""; position:absolute; left:0; right:0; top:100%;
-    height:calc(15 * var(--u));
-    background:linear-gradient(180deg,#241509,#150c04);
-    box-shadow:0 10px 16px -8px rgba(0,0,0,.8); }
+    height:calc(46 * var(--u));
+    background:linear-gradient(180deg,
+      #1a0e06 0, #120a04 20%,
+      rgba(14,8,3,.62) 48%, rgba(14,8,3,0) 100%); }
+  /* the bottom board's lip ends the case, so it stays solid */
+  .shelf:last-of-type .plank::after{ height:calc(15 * var(--u));
+    background:linear-gradient(180deg,#241509,#150c04); }
   /* the case's ceiling: same board, lip shadowing down into the interior */
   .plank--top{ margin-bottom:calc(12 * var(--u)); }
   /* the case's floor: the bottom shelf's board IS the case's bottom — a
