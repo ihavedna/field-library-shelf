@@ -153,16 +153,22 @@
   /* ── A book (spine facing out) ────────────────────────── */
   .book{
     --w:70; --h:352; --c1:#5b2320; --c2:#3a1413;
+    /* per-book gilt strength — the gold lines' colors; overridden by
+       .gilt-bright / .gilt-faded so some volumes still bite while others
+       have worn to a whisper */
+    --g1:rgba(200,156,70,.55);   /* primary line */
+    --g2:rgba(194,150,66,.44);   /* secondary line */
+    --gc:rgba(214,172,90,.5);    /* crest / head accent */
     /* a raised band: leather swelling over a cord. Smooth convex profile —
        occlusion crease, worn gilt (alpha'd so the spine's cylinder shading
        shows through and the band wraps), soft sheen, under-shadow. */
     --bandimg:linear-gradient(180deg,
       rgba(0,0,0,.22) 0%,
-      rgba(190,148,66,.52) 10%,
+      var(--g1) 10%,
       rgba(255,240,210,.20) 30%,
       rgba(255,235,205,.07) 50%,
       rgba(0,0,0,.16) 70%,
-      rgba(190,148,66,.42) 88%,
+      var(--g2) 88%,
       rgba(0,0,0,.32) 100%);
     --bh:11;              /* band thickness (u) — overridden per book for variety */
     --vs:1;               /* vertical-title size multiplier (per book) */
@@ -235,17 +241,23 @@
     --bandimg:linear-gradient(180deg,
       rgba(0,0,0,.20) 0%,
       rgba(255,240,210,.18) 26%,
-      rgba(214,172,90,.46) 50%,
+      var(--gc) 50%,
       rgba(0,0,0,.20) 76%,
       rgba(0,0,0,.34) 100%); }
   .book.band-bold { --bh:13;                /* wide band, gilt riding the head slope */
     --bandimg:linear-gradient(180deg,
       rgba(0,0,0,.18) 0%,
-      rgba(190,148,66,.55) 12%,
-      rgba(230,195,120,.30) 26%,
+      var(--g1) 12%,
+      var(--gc) 26%,
       rgba(255,240,210,.14) 42%,
       rgba(0,0,0,.18) 68%,
       rgba(0,0,0,.38) 100%); }
+
+  /* gilt registers: some volumes' tooling still bites, others have worn soft */
+  .book.gilt-bright{ --g1:rgba(246,220,146,.9); --g2:rgba(238,206,122,.72);
+    --gc:rgba(246,220,146,.8); }
+  .book.gilt-faded { --g1:rgba(176,140,66,.3);  --g2:rgba(170,134,62,.24);
+    --gc:rgba(180,145,70,.28); }
 
   /* ── Per-book leather grain (subtly different spine textures) ─────── */
   .book.tex-fine   { --grain:repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, rgba(255,255,255,.014) 1px 2px); }
@@ -363,14 +375,14 @@
     <!-- Top shelf -->
     <section class="shelf" aria-label="Top shelf">
       <div class="row">
-        <span class="book filler mkeep n3 band-bold tex-fine" aria-hidden="true" style="--w:48;--h:300;--c1:#4a3524;--c2:#281a0e"></span>
-        <a class="book n5 band-wide tex-coarse f-cinzel" style="--w:92;--h:374;--c1:#6d221d;--c2:#420f0e;--fs:14" href="https://ihavedna.github.io/field-library-wiki/about-the-library/" aria-label="About the Library"><span class="title"><span>About</span><span class="mnr">the</span><span>Library</span></span></a>
-        <a class="book n4 band-skinny" style="--w:74;--h:340;--c1:#2f4a33;--c2:#16281b;--fs:14" href="https://ihavedna.github.io/field-library-wiki/delve-reports/" aria-label="Delve Reports"><span class="title"><span>Delve</span><span>Reports</span></span></a>
-        <span class="book filler n3 band-wide tex-pebbled lean-r" aria-hidden="true" style="--w:44;--h:308;--c1:#3a2230;--c2:#20101b"></span>
+        <span class="book filler mkeep n3 band-bold tex-fine gilt-faded" aria-hidden="true" style="--w:48;--h:300;--c1:#4a3524;--c2:#281a0e"></span>
+        <a class="book n5 band-wide tex-coarse f-cinzel gilt-bright" style="--w:92;--h:374;--c1:#6d221d;--c2:#420f0e;--fs:14" href="https://ihavedna.github.io/field-library-wiki/about-the-library/" aria-label="About the Library"><span class="title"><span>About</span><span class="mnr">the</span><span>Library</span></span></a>
+        <a class="book n4 band-skinny gilt-bright" style="--w:74;--h:340;--c1:#2f4a33;--c2:#16281b;--fs:14" href="https://ihavedna.github.io/field-library-wiki/delve-reports/" aria-label="Delve Reports"><span class="title"><span>Delve</span><span>Reports</span></span></a>
+        <span class="book filler n3 band-wide tex-pebbled lean-r gilt-faded" aria-hidden="true" style="--w:44;--h:308;--c1:#3a2230;--c2:#20101b"></span>
         <a class="book n5 tex-fine" style="--w:82;--h:362;--c1:#26324e;--c2:#111a2e;--fs:13" href="https://ihavedna.github.io/field-library-wiki/reports-on-vigil/" aria-label="Reports on Vigil"><span class="title"><span>Reports</span><span><i class="mw">on</i>&nbsp;Vigil</span></span></a>
         <a class="book n3 band-bold tex-pebbled vert" style="--w:60;--h:328;--c1:#9a6a37;--c2:#5c3c1d;--vs:.85" href="https://ihavedna.github.io/field-library-wiki/maps/" aria-label="Maps"><span class="title"><span>Maps</span></span></a>
-        <a class="book n5 band-skinny tex-coarse" style="--w:104;--h:386;--c1:#4a2c19;--c2:#27160d;--fs:13" href="https://ihavedna.github.io/field-library-wiki/primary-sources-and-documents/" aria-label="Primary Sources and Documents"><span class="title"><span>Primary</span><span>Sources</span><span>&amp;&nbsp;Documents</span></span></a>
-        <a class="book n4 band-wide vert f-cormorant" style="--w:72;--h:350;--c1:#5b2038;--c2:#331120" href="https://ihavedna.github.io/field-library-wiki/history/" aria-label="History"><span class="title"><span>History</span></span></a>
+        <a class="book n5 band-skinny tex-coarse gilt-faded" style="--w:104;--h:386;--c1:#4a2c19;--c2:#27160d;--fs:13" href="https://ihavedna.github.io/field-library-wiki/primary-sources-and-documents/" aria-label="Primary Sources and Documents"><span class="title"><span>Primary</span><span>Sources</span><span>&amp;&nbsp;Documents</span></span></a>
+        <a class="book n4 band-wide vert f-cormorant gilt-bright" style="--w:72;--h:350;--c1:#5b2038;--c2:#331120" href="https://ihavedna.github.io/field-library-wiki/history/" aria-label="History"><span class="title"><span>History</span></span></a>
         <span class="book filler n5 band-skinny tex-coarse" aria-hidden="true" style="--w:54;--h:332;--c1:#45301c;--c2:#241708"></span>
       </div>
       <div class="plank"></div>
@@ -381,13 +393,13 @@
       <div class="row">
         <span class="book filler mkeep n4 band-skinny tex-pebbled" aria-hidden="true" style="--w:54;--h:312;--c1:#37301f;--c2:#1d160c"></span>
         <a class="book n5 band-bold tex-fine" style="--w:96;--h:368;--c1:#33472c;--c2:#182615;--fs:12" href="https://ihavedna.github.io/field-library-wiki/publications-and-personal-works/" aria-label="Publications and Personal Works"><span class="title"><span>Publications</span><span class="mnr">and</span><span>Personal</span><span class="mid">Works</span></span></a>
-        <a class="book n5 tex-coarse" style="--w:104;--h:356;--c1:#7a4a24;--c2:#472811;--fs:13" href="https://ihavedna.github.io/field-library-wiki/additional-references-and-documents/" aria-label="Additional References and Documents"><span class="title"><span>Additional</span><span>References</span><span class="mnr">and</span><span>Documents</span></span></a>
-        <span class="book filler n3 band-wide" aria-hidden="true" style="--w:44;--h:330;--c1:#522026;--c2:#2c0f14"></span>
-        <a class="book n5 band-wide tex-pebbled f-cinzel" style="--w:80;--h:380;--c1:#631f2c;--c2:#390f19;--fs:12" href="https://ihavedna.github.io/field-library-wiki/spells-patterns-and-formulas/" aria-label="Spells, Patterns and Formulas"><span class="title"><span>Spells</span><span>Patterns</span><span class="mnr">and</span><span>Formulas</span></span></a>
+        <a class="book n5 tex-coarse gilt-faded" style="--w:104;--h:356;--c1:#7a4a24;--c2:#472811;--fs:13" href="https://ihavedna.github.io/field-library-wiki/additional-references-and-documents/" aria-label="Additional References and Documents"><span class="title"><span>Additional</span><span>References</span><span class="mnr">and</span><span>Documents</span></span></a>
+        <span class="book filler n3 band-wide gilt-faded" aria-hidden="true" style="--w:44;--h:330;--c1:#522026;--c2:#2c0f14"></span>
+        <a class="book n5 band-wide tex-pebbled f-cinzel gilt-bright" style="--w:80;--h:380;--c1:#631f2c;--c2:#390f19;--fs:12" href="https://ihavedna.github.io/field-library-wiki/spells-patterns-and-formulas/" aria-label="Spells, Patterns and Formulas"><span class="title"><span>Spells</span><span>Patterns</span><span class="mnr">and</span><span>Formulas</span></span></a>
         <a class="book n3 band-skinny tex-fine vert f-cormorant" style="--w:74;--h:336;--c1:#2a3550;--c2:#141b30" href="https://ihavedna.github.io/field-library-wiki/artifacts/" aria-label="Artifacts"><span class="title"><span>Artifacts</span></span></a>
         <span class="book filler n3 band-bold tex-coarse lean-l" aria-hidden="true" style="--w:54;--h:322;--c1:#4a3a24;--c2:#271c0e"></span>
         <a class="book n4 band-bold tex-coarse" style="--w:74;--h:348;--c1:#8a5a2c;--c2:#523216;--fs:14" href="https://ihavedna.github.io/field-library-wiki/recent-changes/" aria-label="Recent Changes"><span class="title"><span>Recent</span><span>Changes</span></span></a>
-        <span class="book filler mkeep n5 tex-pebbled" aria-hidden="true" style="--w:54;--h:316;--c1:#3e2b1a;--c2:#20140a"></span>
+        <span class="book filler mkeep n5 tex-pebbled gilt-faded" aria-hidden="true" style="--w:54;--h:316;--c1:#3e2b1a;--c2:#20140a"></span>
       </div>
       <div class="plank"></div>
     </section>
