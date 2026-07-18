@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Vigil Field Library</title>
+<meta name="description" content="The shelves of the Vigil Field Library — pull a volume to begin.">
+<meta name="theme-color" content="#241509">
+<meta property="og:title" content="The Vigil Field Library">
+<meta property="og:description" content="The shelves of the Vigil Field Library — pull a volume to begin.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ihavedna.github.io/field-library-shelf/">
+<link rel="icon" href="https://ihavedna.github.io/field-library-wiki/assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant:wght@500;600;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#d8b45a;
+    --gold-bright:#f6dc92;
+    --gold-deep:#a9822f;
+    --ink:#f3e6c8;
+    --wood:#3a2415;
+    --wood-lo:#1f1109;
+    --wood-hi:#61411f;
+    --font:"EB Garamond","Iowan Old Style",Georgia,serif;
+    --u:clamp(0.62px, 0.115vw + 0.09px, 1px);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; min-height:100%; }
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:
+      radial-gradient(90% 55% at 50% -8%, rgba(120,86,44,.55) 0%, rgba(60,40,22,.25) 40%, rgba(0,0,0,0) 72%),
+      radial-gradient(140% 100% at 50% 0%, #3c2717 0%, #241608 48%, #150c05 100%),
+      #120a04;
+    background-attachment:fixed;
+    display:flex; flex-direction:column; align-items:center;
+    padding:clamp(1.4rem,4vw,3rem) 1rem 3rem;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* lamp-light vignette: corners fall into shadow, centre stays lit */
+  body::after{ content:""; position:fixed; inset:0; pointer-events:none; z-index:40;
+    background:radial-gradient(115% 90% at 50% 8%, rgba(0,0,0,0) 55%, rgba(8,4,1,.4) 100%); }
+
+  /* ── Masthead ─────────────────────────────────────────── */
+  header{ text-align:center; margin-bottom:clamp(1.6rem,3.6vw,3rem); }
+  h1{
+    font-weight:600; letter-spacing:.015em; margin:0;
+    font-size:clamp(2.1rem,4.8vw,3.4rem);
+    color:var(--gold-bright);
+    text-shadow:0 1px 0 #6b5220, 0 2px 10px rgba(0,0,0,.6);
+  }
+  h1 .the{ font-size:.6em; font-variant:small-caps; letter-spacing:.08em; opacity:.88; margin-right:.06em; }
+  .hint{ margin:1rem 0 0; font-variant:small-caps; letter-spacing:.2em;
+         font-size:1.02rem; color:var(--gold); opacity:.72; }
+  .hint::before,.hint::after{ content:"·"; margin:0 .7em; opacity:.7; }
+
+  /* ── Bookcase ─────────────────────────────────────────── */
+  /* the case: wooden frame + dark back panel that grounds the shelves */
+  .bookcase{ width:100%; max-width:800px; display:flex; flex-direction:column;
+    gap:calc(26 * var(--u));
+    padding:calc(30 * var(--u)) calc(20 * var(--u)) calc(4 * var(--u));
+    border:calc(18 * var(--u)) solid;
+    border-top-width:calc(14 * var(--u));
+    border-bottom-width:calc(22 * var(--u));
+    border-image:linear-gradient(180deg,#6b4726 0%,#4a2f1a 35%,#2a1a0d 100%) 1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,0) 12%),
+      linear-gradient(180deg, #241509 0%, #190e06 100%);
+    box-shadow:
+      inset 0 0 calc(44 * var(--u)) rgba(0,0,0,.55),
+      0 36px 64px -28px rgba(0,0,0,.9);
+  }
+  .shelf{ position:relative; }
+  /* the case stiles shade the outermost volumes and the shelf-board ends —
+     seats both IN the case */
+  .shelf::after{ content:""; position:absolute; inset:0 calc(-20 * var(--u));
+    pointer-events:none; z-index:3;
+    background:linear-gradient(90deg, rgba(0,0,0,.36), transparent 8%, transparent 92%, rgba(0,0,0,.36)); }
+
+  .row{
+    display:flex; align-items:flex-end; justify-content:center;
+    gap:calc(3 * var(--u));
+    padding:0 calc(10 * var(--u));
+    min-height:calc(398 * var(--u));
+    /* one shared viewpoint — the viewer stands at the centre of the case, so
+       outer volumes tip slightly off-axis. Distance is generous so the skew
+       stays a cue, never a distortion. */
+    perspective:2000px; perspective-origin:50% 42%;
+    overflow:visible;
+  }
+  @media (max-width:680px){
+    .row{ justify-content:flex-start; overflow-x:auto; overflow-y:visible;
+          scrollbar-width:none; padding-top:calc(40 * var(--u)); }
+    .row::-webkit-scrollbar{ display:none; }
+    .row::after{ content:""; flex:0 0 calc(14 * var(--u)); }
+    /* keep the invitation on one line */
+    .hint{ font-size:.82rem; letter-spacing:.14em; }
+  }
+
+  /* shelf board: joined into the case — full-bleed to the stiles (cancels
+     the case's side padding), square butt joints, the frame's wood tones,
+     grain running along the board's length */
+  .plank{ height:calc(30 * var(--u)); position:relative;
+    margin:0 calc(-20 * var(--u));
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,.45)),
+      repeating-linear-gradient(0deg, rgba(255,220,170,.04) 0 2px, rgba(0,0,0,.06) 2px 5px),
+      linear-gradient(180deg, #5d3d20 0%, #3a2415 45%, #241509 100%);
+    box-shadow:
+      inset 0 2px 0 rgba(255,220,170,.16),
+      inset 0 -3px 6px rgba(0,0,0,.5),
+      0 12px 18px -10px rgba(0,0,0,.7);
+  }
+  .plank::after{ content:""; position:absolute; left:0; right:0; top:100%;
+    height:calc(15 * var(--u));
+    background:linear-gradient(180deg,#241509,#150c04);
+    box-shadow:0 10px 16px -8px rgba(0,0,0,.8); }
+  .row::before{ content:""; position:absolute; left:5%; right:5%; bottom:-2px; height:16px;
+    background:radial-gradient(60% 100% at 50% 0, rgba(0,0,0,.6), transparent 74%);
+    filter:blur(3px); pointer-events:none; }
+
+  /* ── A book (spine facing out) ────────────────────────── */
+  .book{
+    --w:70; --h:352; --c1:#5b2320; --c2:#3a1413;
+    /* a single raised band (cord) carrying its own gilt lines top & bottom */
+    --bandimg:linear-gradient(180deg,
+      var(--gold-deep) 0, var(--gold-deep) 10%,
+      rgba(255,240,210,.34) 12%, rgba(255,240,210,.15) 34%,
+      rgba(0,0,0,.10) 48%, rgba(0,0,0,.46) 84%,
+      var(--gold-deep) 90%, var(--gold-deep) 100%);
+    --bh:11;              /* band thickness (u) — overridden per book for variety */
+    --vs:1;               /* vertical-title size multiplier (per book) */
+    --tt:15%; --tb:56%;   /* enlarged 2nd panel holds the title (default 4-band spine) */
+    /* fine vertical leather grain — overridden per book so spines differ */
+    --grain:repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 1px, rgba(255,255,255,.02) 1px 3px);
+    position:relative; display:block; flex:0 0 auto;
+    width:calc(var(--w) * var(--u)); height:calc(var(--h) * var(--u));
+    border-radius:3px 3px 2px 2px;
+    text-decoration:none; color:var(--gold);
+    transform-origin:50% 100%;
+    background-image:
+      /* headcap: the spine's cylinder turning over at the very top */
+      radial-gradient(100% calc(20 * var(--u)) at 50% 0, rgba(255,240,210,.13), rgba(255,240,210,0) 72%),
+      var(--grain),
+      linear-gradient(90deg,
+        rgba(0,0,0,.6) 0%, rgba(0,0,0,.12) 12%,
+        var(--c1) 44%, var(--c1) 56%,
+        rgba(0,0,0,.16) 88%, rgba(0,0,0,.66) 100%),
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--c1) 76%, #000 5%) 0%,
+        color-mix(in srgb, var(--c1) 90%, #fff 8%) 8%,
+        var(--c1) 20%, var(--c2) 90%,
+        color-mix(in srgb, var(--c2) 70%, #000 20%) 100%);
+    box-shadow:
+      inset 0 7px 7px -5px rgba(255,235,200,.26),
+      inset 0 -8px 8px -5px rgba(0,0,0,.42),
+      inset 0 0 0 1px rgba(0,0,0,.4),
+      inset 2px 0 3px rgba(255,255,255,.07),
+      inset -3px 0 6px rgba(0,0,0,.5),
+      0 10px 14px -8px rgba(0,0,0,.7);
+    transition:transform .4s cubic-bezier(.28,1.1,.4,1), box-shadow .4s ease, filter .4s ease;
+    will-change:transform; cursor:pointer; overflow:hidden;
+  }
+  /* ── Raised bands (sewn cords) ─────────────────────────────────────
+     Evenly spaced down the whole spine, dividing it into panels, with
+     slightly larger head & tail panels. Count varies by spine height via
+     the preset class (.n3 / .n4 / .n5); each band carries its own gilt
+     lines. The title sits in the 2nd panel from the top (--tt/--tb).
+     Default below is the 4-band spine. */
+  .book::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.9;
+    background:
+      var(--bandimg) center 12% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 46% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 65% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 84% / 100% calc(var(--bh) * var(--u)) no-repeat; }
+
+  /* three bands — for shorter spines (large title panel) */
+  .book.n3{ --tt:17%; --tb:50%; }
+  .book.n3::after{ background:
+      var(--bandimg) center 14% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 52% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 82% / 100% calc(var(--bh) * var(--u)) no-repeat; }
+
+  /* five bands — for taller spines (more cords; smaller lower panels) */
+  .book.n5{ --tt:14%; --tb:62%; }
+  .book.n5::after{ background:
+      var(--bandimg) center 11% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 40% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 56% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 72% / 100% calc(var(--bh) * var(--u)) no-repeat,
+      var(--bandimg) center 88% / 100% calc(var(--bh) * var(--u)) no-repeat; }
+
+  /* ── Per-book band treatments ──────────────────────────────────────
+     Each varies the band thickness (--bh) and the gilt-line styling. A
+     book carries one of these, so all its bands match; different books
+     differ. Default (no class) = medium band with a gilt line on each edge. */
+  .book.band-wide { --bh:15; }              /* thicker band, gilt on both edges */
+  .book.band-skinny{ --bh:9;                /* thin band, one gilt line down the crest */
+    --bandimg:linear-gradient(180deg,
+      rgba(255,240,210,.30) 0 30%,
+      var(--gold-deep) 40%, var(--gold-bright) 50%, var(--gold-deep) 60%,
+      rgba(0,0,0,.46) 74% 100%); }
+  .book.band-bold { --bh:13;                /* wide band, one bold gilt line at the head */
+    --bandimg:linear-gradient(180deg,
+      var(--gold-deep) 0 17%,
+      rgba(255,240,210,.30) 25% 46%,
+      rgba(0,0,0,.26) 60%, rgba(0,0,0,.5) 100%); }
+
+  /* ── Per-book leather grain (subtly different spine textures) ─────── */
+  .book.tex-fine   { --grain:repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, rgba(255,255,255,.014) 1px 2px); }
+  .book.tex-coarse { --grain:repeating-linear-gradient(90deg, rgba(0,0,0,.15) 0 1px, rgba(255,255,255,.03) 1px 5px); }
+  .book.tex-pebbled{ --grain:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.10) 0 1px, rgba(255,255,255,.018) 1px 4px),
+      repeating-linear-gradient(0deg,  rgba(0,0,0,.05) 0 1px, rgba(255,255,255,.010) 1px 7px); }
+
+  /* horizontal title, stacked and centred in the open middle of the spine */
+  .book .title{
+    position:absolute; left:0; right:0; top:var(--tt); bottom:var(--tb);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(1.5 * var(--u));
+    padding:0; text-align:center;
+    font-variant:small-caps; font-weight:600; letter-spacing:.015em; line-height:1.02;
+    font-size:calc(var(--fs, 14) * var(--u)); color:var(--gold-bright); opacity:.8;
+    /* tooled INTO the leather: dark edge above the strokes, lit lip below */
+    text-shadow:0 -1px 0 rgba(0,0,0,.55), 0 1px 1px rgba(255,242,205,.22); overflow:hidden; }
+  /* each line is a flex item sized to its own content; fit-titles.js scales
+     each one up to fill the spine width (short lines get bigger type).
+     .mnr = a small connector LINE (the/and); .mid = a word kept proportionate
+     (not blown up to full width); .mw = a small connector word set INLINE. */
+  .book .title span{ display:block; white-space:nowrap; }
+  .book .title .mw{ font-style:normal; font-size:.66em; }
+
+  /* vertical-spine titles: the single word is turned up the spine but stays
+     within its normal 2nd panel (between the same bands as before). */
+  .book.vert .title{ flex-direction:row; }
+  .book.vert .title > span{ writing-mode:vertical-rl; text-orientation:mixed; letter-spacing:-.012em; }
+
+  /* per-book serif variety */
+  .book.f-cormorant .title{ font-family:"Cormorant", var(--font); font-weight:600; }
+  .book.f-cinzel .title{ font-family:"Cinzel", var(--font); letter-spacing:.03em; }
+
+  /* decorative, non-clickable filler volumes */
+  .book.filler{ cursor:default; pointer-events:none; }
+
+  /* hover / focus: the volume pivots at its base and tips out of the shelf,
+     the way a fingertip hooks the headcap — lift is modest, the tilt sells it.
+     Hover physics only exist where hover exists (mouse/trackpad); on touch,
+     taps still get the :active press, and keyboard focus keeps the tip. */
+  @media (hover:hover){
+    .book:hover{
+      transform:translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg);
+      box-shadow:
+        inset 0 7px 7px -5px rgba(255,235,200,.3),
+        inset 0 -8px 8px -5px rgba(0,0,0,.4),
+        inset 0 0 0 1px rgba(0,0,0,.3),
+        inset 2px 0 3px rgba(255,255,255,.1),
+        inset -3px 0 6px rgba(0,0,0,.4),
+        0 22px 26px -15px rgba(0,0,0,.8);
+      filter:brightness(1.07); z-index:6; outline:none; }
+    /* the gilt catches the light as the spine tips toward the lamp */
+    .book:hover .title{ opacity:.95; }
+  }
+  .book:focus-visible{
+    transform:translateY(calc(-11 * var(--u))) translateZ(8px) rotateX(-5deg);
+    box-shadow:0 0 0 2px var(--gold-bright), 0 22px 26px -15px rgba(0,0,0,.8);
+    filter:brightness(1.07); z-index:6; outline:none; }
+  .book:focus-visible .title{ opacity:.95; }
+  /* click: the book presses back in for a beat — tactile confirmation */
+  .book:active{
+    transform:translateY(calc(-5 * var(--u))) translateZ(4px) rotateX(-2deg);
+    transition-duration:.1s; filter:brightness(1.03); }
+
+  /* entrance: each volume settles onto its shelf, staggered left→right,
+     the lower shelf a beat behind the upper */
+  @keyframes shelve{
+    from{ opacity:0; transform:translateZ(46px) rotateX(-6deg); } }
+  .row > .book{
+    animation:shelve .6s cubic-bezier(.22,1,.36,1) backwards;
+    animation-delay:calc(var(--shelfd, 0ms) + var(--d, 0) * 55ms); }
+  .row > :nth-child(1){ --d:0 } .row > :nth-child(2){ --d:1 }
+  .row > :nth-child(3){ --d:2 } .row > :nth-child(4){ --d:3 }
+  .row > :nth-child(5){ --d:4 } .row > :nth-child(6){ --d:5 }
+  .row > :nth-child(7){ --d:6 } .row > :nth-child(8){ --d:7 }
+  .row > :nth-child(9){ --d:8 }
+  .shelf:nth-of-type(2){ --shelfd:170ms; }
+
+  /* shelf entropy: a volume here and there leans against its neighbour.
+     The clearance margin on the resting side equals the top corner's swing
+     (h·sin θ), so the corner lands exactly on the neighbour's edge — books
+     TOUCH, they never cross into each other. The smaller margin on the far
+     side is the sliver of gap the book slumped away from. */
+  .book.lean-r{ transform:rotate(4deg); transform-origin:100% 100%;
+    margin-left:calc(-3 * var(--u)); margin-right:calc(17 * var(--u)); z-index:2; }
+  .book.lean-l{ transform:rotate(-3deg); transform-origin:0 100%;
+    margin-left:calc(13 * var(--u)); margin-right:calc(-3 * var(--u)); z-index:2; }
+
+  footer{ margin-top:clamp(2rem,4vw,3.4rem); text-align:center; }
+  /* brass plaque on the front of the case */
+  footer a{ display:inline-block; color:var(--gold); text-decoration:none;
+    font-variant:small-caps; letter-spacing:.16em; font-size:.92rem;
+    padding:.5em 1.3em; border:1px solid rgba(216,180,90,.45); border-radius:4px;
+    background:linear-gradient(180deg, rgba(216,180,90,.16), rgba(216,180,90,.04));
+    box-shadow:inset 0 1px 0 rgba(255,235,190,.28), 0 2px 6px rgba(0,0,0,.5);
+    transition:color .2s, background .2s, box-shadow .2s; }
+  footer a:hover{ color:var(--gold-bright);
+    background:linear-gradient(180deg, rgba(216,180,90,.24), rgba(216,180,90,.08));
+    box-shadow:inset 0 1px 0 rgba(255,235,190,.34), 0 3px 9px rgba(0,0,0,.55); }
+
+  @media (prefers-reduced-motion:reduce){
+    .book, .row > .book{ transition:box-shadow .2s, filter .2s; animation:none; }
+    .book:hover,.book:focus-visible{ transform:translateY(calc(-14 * var(--u))); }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1><span class="the">The</span>Vigil Field Library</h1>
+    <p class="hint">Pull a volume from the shelf</p>
+  </header>
+
+  <main class="bookcase">
+    <!-- Top shelf -->
+    <section class="shelf" aria-label="Top shelf">
+      <div class="row">
+        <span class="book filler n3 band-bold tex-fine" aria-hidden="true" style="--w:48;--h:300;--c1:#4a3524;--c2:#281a0e"></span>
+        <a class="book n5 band-wide tex-coarse f-cinzel" style="--w:92;--h:374;--c1:#6d221d;--c2:#420f0e;--fs:14" href="https://ihavedna.github.io/field-library-wiki/about-the-library/" aria-label="About the Library"><span class="title"><span>About</span><span class="mnr">the</span><span>Library</span></span></a>
+        <a class="book n4 band-skinny" style="--w:74;--h:340;--c1:#2f4a33;--c2:#16281b;--fs:14" href="https://ihavedna.github.io/field-library-wiki/delve-reports/" aria-label="Delve Reports"><span class="title"><span>Delve</span><span>Reports</span></span></a>
+        <span class="book filler n3 band-wide tex-pebbled lean-r" aria-hidden="true" style="--w:44;--h:308;--c1:#3a2230;--c2:#20101b"></span>
+        <a class="book n5 tex-fine" style="--w:82;--h:362;--c1:#26324e;--c2:#111a2e;--fs:13" href="https://ihavedna.github.io/field-library-wiki/reports-on-vigil/" aria-label="Reports on Vigil"><span class="title"><span>Reports</span><span><i class="mw">on</i>&nbsp;Vigil</span></span></a>
+        <a class="book n3 band-bold tex-pebbled vert" style="--w:60;--h:328;--c1:#9a6a37;--c2:#5c3c1d;--vs:.85" href="https://ihavedna.github.io/field-library-wiki/maps/" aria-label="Maps"><span class="title"><span>Maps</span></span></a>
+        <a class="book n5 band-skinny tex-coarse" style="--w:104;--h:386;--c1:#4a2c19;--c2:#27160d;--fs:13" href="https://ihavedna.github.io/field-library-wiki/primary-sources-and-documents/" aria-label="Primary Sources and Documents"><span class="title"><span>Primary</span><span>Sources</span><span>&amp;&nbsp;Documents</span></span></a>
+        <a class="book n4 band-wide vert f-cormorant" style="--w:72;--h:350;--c1:#5b2038;--c2:#331120" href="https://ihavedna.github.io/field-library-wiki/history/" aria-label="History"><span class="title"><span>History</span></span></a>
+        <span class="book filler n5 band-skinny tex-coarse" aria-hidden="true" style="--w:54;--h:332;--c1:#45301c;--c2:#241708"></span>
+      </div>
+      <div class="plank"></div>
+    </section>
+
+    <!-- Bottom shelf -->
+    <section class="shelf" aria-label="Bottom shelf">
+      <div class="row">
+        <span class="book filler n4 band-skinny tex-pebbled" aria-hidden="true" style="--w:46;--h:312;--c1:#37301f;--c2:#1d160c"></span>
+        <a class="book n5 band-bold tex-fine" style="--w:96;--h:368;--c1:#33472c;--c2:#182615;--fs:12" href="https://ihavedna.github.io/field-library-wiki/publications-and-personal-works/" aria-label="Publications and Personal Works"><span class="title"><span>Publications</span><span class="mnr">and</span><span>Personal</span><span class="mid">Works</span></span></a>
+        <a class="book n5 tex-coarse" style="--w:104;--h:356;--c1:#7a4a24;--c2:#472811;--fs:13" href="https://ihavedna.github.io/field-library-wiki/additional-references-and-documents/" aria-label="Additional References and Documents"><span class="title"><span>Additional</span><span>References</span><span class="mnr">and</span><span>Documents</span></span></a>
+        <span class="book filler n3 band-wide" aria-hidden="true" style="--w:44;--h:330;--c1:#522026;--c2:#2c0f14"></span>
+        <a class="book n5 band-wide tex-pebbled f-cinzel" style="--w:80;--h:380;--c1:#631f2c;--c2:#390f19;--fs:12" href="https://ihavedna.github.io/field-library-wiki/spells-patterns-and-formulas/" aria-label="Spells, Patterns and Formulas"><span class="title"><span>Spells</span><span>Patterns</span><span class="mnr">and</span><span>Formulas</span></span></a>
+        <a class="book n3 band-skinny tex-fine vert f-cormorant" style="--w:74;--h:336;--c1:#2a3550;--c2:#141b30" href="https://ihavedna.github.io/field-library-wiki/artifacts/" aria-label="Artifacts"><span class="title"><span>Artifacts</span></span></a>
+        <span class="book filler n3 band-bold tex-coarse lean-l" aria-hidden="true" style="--w:54;--h:322;--c1:#4a3a24;--c2:#271c0e"></span>
+        <a class="book n4 band-bold tex-coarse" style="--w:74;--h:348;--c1:#8a5a2c;--c2:#523216;--fs:14" href="https://ihavedna.github.io/field-library-wiki/recent-changes/" aria-label="Recent Changes"><span class="title"><span>Recent</span><span>Changes</span></span></a>
+        <span class="book filler n5 tex-pebbled" aria-hidden="true" style="--w:44;--h:316;--c1:#3e2b1a;--c2:#20140a"></span>
+      </div>
+      <div class="plank"></div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="https://ihavedna.github.io/field-library-wiki/">Enter the full catalogue &rsaquo;</a>
+  </footer>
+
+  <script>
+  /* Size title lines to fit the spine. Horizontal titles: each major line
+     fills the spine width; .mnr connector lines are set small (relative to the
+     majors); .mid lines are capped so short words stay proportionate; then the
+     whole stack shrinks if it's taller than the title panel. Vertical (.vert)
+     titles: one word turned up the spine, sized to the panel. Re-runs on load,
+     font-load and resize. */
+  (function () {
+    var REF = 40;
+    function fitOne(title) {
+      var book = title.closest('.book');
+      if (!book) return;
+      var pw = title.clientWidth, ph = title.clientHeight;
+      if (!pw || !ph) return;
+      var lines = Array.prototype.slice.call(title.children);
+      if (!lines.length) return;
+
+      if (book.classList.contains('vert')) {
+        var s = lines[0];
+        var vs = parseFloat(getComputedStyle(book).getPropertyValue('--vs')) || 1;
+        s.style.fontSize = REF + 'px';
+        var r = s.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        var scale = Math.min(pw / r.width, ph / r.height) * 0.92 * vs;
+        s.style.fontSize = (REF * scale) + 'px';
+        // shrink to correct any residual overflow of the rotated text box
+        for (var i = 0; i < 4; i++) {
+          var ow = title.scrollWidth - title.clientWidth;
+          var oh = title.scrollHeight - title.clientHeight;
+          if (ow <= 0 && oh <= 0) break;
+          var cur = parseFloat(s.style.fontSize);
+          var f = Math.min(ow > 0 ? title.clientWidth / title.scrollWidth : 1,
+                           oh > 0 ? title.clientHeight / title.scrollHeight : 1) * 0.98;
+          s.style.fontSize = (cur * f) + 'px';
+        }
+        return;
+      }
+
+      var pad = Math.max(3, pw * 0.045);
+      var availW = pw - 2 * pad;
+      lines.forEach(function (l) { l.style.fontSize = REF + 'px'; });
+      var info = lines.map(function (l) {
+        var w = l.getBoundingClientRect().width;
+        return { el: l, fill: w > 0 ? REF * availW / w : REF };
+      });
+      var majors = info.filter(function (x) {
+        return !x.el.classList.contains('mnr') && !x.el.classList.contains('mid');
+      });
+      var base = majors.length
+        ? majors.reduce(function (a, x) { return a + x.fill; }, 0) / majors.length
+        : REF;
+      info.forEach(function (x) {
+        if (x.el.classList.contains('mnr')) x.size = base * 0.6;
+        else if (x.el.classList.contains('mid')) x.size = Math.min(x.fill, base * 1.05);
+        else x.size = Math.min(x.fill, pw * 0.62);
+        x.el.style.fontSize = x.size + 'px';
+      });
+      var total = title.scrollHeight;
+      if (total > ph) {
+        var k = (ph / total) * 0.99;
+        info.forEach(function (x) { x.el.style.fontSize = (x.size * k) + 'px'; });
+      }
+    }
+    function fitAll() { document.querySelectorAll('.book .title').forEach(fitOne); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+    window.addEventListener('load', fitAll);
+    var t; window.addEventListener('resize', function () {
+      clearTimeout(t); t = setTimeout(fitAll, 120);
+    });
+  })();
+  </script>
+</body>
+</html>
