@@ -43,6 +43,13 @@
   /* lamp-light vignette: corners fall into shadow, centre stays lit */
   body::after{ content:""; position:fixed; inset:0; pointer-events:none; z-index:40;
     background:radial-gradient(115% 90% at 50% 8%, rgba(0,0,0,0) 55%, rgba(8,4,1,.4) 100%); }
+  /* the lamp breathes — near-subliminal, slow — so the scene isn't a still */
+  body::before{ content:""; position:fixed; inset:0; pointer-events:none; z-index:30;
+    background:radial-gradient(90% 60% at 50% -8%, rgba(255,205,130,.09), rgba(255,205,130,0) 62%);
+    animation:lamp-breath 9s ease-in-out infinite alternate; }
+  @keyframes lamp-breath{ from{ opacity:.45 } to{ opacity:1 } }
+  @media (prefers-reduced-motion:reduce){
+    body::before{ animation:none; opacity:.7 } }
 
   /* ── Masthead ─────────────────────────────────────────── */
   header{ text-align:center; margin-bottom:clamp(1.6rem,3.6vw,3rem); }
@@ -324,8 +331,10 @@
 
   /* entrance: each volume settles onto its shelf, staggered left→right,
      the lower shelf a beat behind the upper */
+  /* NOTE: Z distance is tuned against the row's 2000px perspective — if the
+     viewpoint moves again, retune this so the settle stays perceptible */
   @keyframes shelve{
-    from{ opacity:0; transform:translateZ(46px) rotateX(-6deg); } }
+    from{ opacity:0; transform:translateZ(68px) rotateX(-6deg); } }
   .row > .book{
     animation:shelve .6s cubic-bezier(.22,1,.36,1) backwards;
     animation-delay:calc(var(--shelfd, 0ms) + var(--d, 0) * 55ms); }
@@ -357,6 +366,9 @@
   footer a:hover{ color:var(--gold-bright);
     background:linear-gradient(180deg, rgba(216,180,90,.24), rgba(216,180,90,.08));
     box-shadow:inset 0 1px 0 rgba(255,235,190,.34), 0 3px 9px rgba(0,0,0,.55); }
+  /* the plaque presses in like everything else in this room */
+  footer a:active{ transform:translateY(1px);
+    box-shadow:inset 0 1px 0 rgba(255,235,190,.2), 0 1px 3px rgba(0,0,0,.5); }
 
   @media (prefers-reduced-motion:reduce){
     .book, .row > .book{ transition:box-shadow .2s, filter .2s; animation:none; }
@@ -477,6 +489,25 @@
     window.addEventListener('load', fitAll);
     var t; window.addEventListener('resize', function () {
       clearTimeout(t); t = setTimeout(fitAll, 120);
+    });
+  })();
+
+  /* Warm the destination: the first time a book is hovered or focused,
+     prefetch its section's page — the click then lands near-instantly. */
+  (function () {
+    var seen = {};
+    function warm(href) {
+      if (seen[href]) return;
+      seen[href] = 1;
+      var l = document.createElement('link');
+      l.rel = 'prefetch';
+      l.href = href;
+      document.head.appendChild(l);
+    }
+    document.querySelectorAll('a.book, footer a').forEach(function (a) {
+      var go = function () { warm(a.href); };
+      a.addEventListener('pointerenter', go);
+      a.addEventListener('focus', go);
     });
   })();
   </script>
