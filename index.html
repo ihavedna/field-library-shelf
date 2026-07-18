@@ -77,9 +77,10 @@
       0 36px 64px -28px rgba(0,0,0,.9);
   }
   .shelf{ position:relative; }
-  /* the case stiles shade the outermost volumes and the shelf-board ends —
-     seats both IN the case */
-  .shelf::after{ content:""; position:absolute; inset:0 calc(-8 * var(--u));
+  /* ONE continuous stile shadow over the whole interior — boards, gaps and
+     books alike — so the corner shading never steps between regions */
+  .bookcase{ position:relative; }
+  .bookcase::after{ content:""; position:absolute; inset:0;
     pointer-events:none; z-index:3;
     background:linear-gradient(90deg, rgba(0,0,0,.36), transparent 8%, transparent 92%, rgba(0,0,0,.36)); }
 
