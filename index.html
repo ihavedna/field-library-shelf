@@ -91,11 +91,12 @@
     perspective:2000px; perspective-origin:50% 42%;
     overflow:visible;
   }
+  /* Mobile: no panning — the decorative filler volumes step aside and the
+     whole case scales to the viewport, so every clickable tome is visible
+     on load. (The lower --u floor is what lets the case shrink to fit.) */
   @media (max-width:680px){
-    .row{ justify-content:flex-start; overflow-x:auto; overflow-y:visible;
-          scrollbar-width:none; padding-top:calc(40 * var(--u)); }
-    .row::-webkit-scrollbar{ display:none; }
-    .row::after{ content:""; flex:0 0 calc(14 * var(--u)); }
+    :root{ --u:clamp(0.4px, 0.115vw + 0.09px, 1px); }
+    .book.filler{ display:none; }
     /* keep the invitation on one line */
     .hint{ font-size:.82rem; letter-spacing:.14em; }
   }
