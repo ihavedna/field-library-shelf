@@ -153,12 +153,17 @@
   /* ── A book (spine facing out) ────────────────────────── */
   .book{
     --w:70; --h:352; --c1:#5b2320; --c2:#3a1413;
-    /* a single raised band (cord) carrying its own gilt lines top & bottom */
+    /* a raised band: leather swelling over a cord. Smooth convex profile —
+       occlusion crease, worn gilt (alpha'd so the spine's cylinder shading
+       shows through and the band wraps), soft sheen, under-shadow. */
     --bandimg:linear-gradient(180deg,
-      var(--gold-deep) 0, var(--gold-deep) 10%,
-      rgba(255,240,210,.34) 12%, rgba(255,240,210,.15) 34%,
-      rgba(0,0,0,.10) 48%, rgba(0,0,0,.46) 84%,
-      var(--gold-deep) 90%, var(--gold-deep) 100%);
+      rgba(0,0,0,.22) 0%,
+      rgba(190,148,66,.52) 10%,
+      rgba(255,240,210,.20) 30%,
+      rgba(255,235,205,.07) 50%,
+      rgba(0,0,0,.16) 70%,
+      rgba(190,148,66,.42) 88%,
+      rgba(0,0,0,.32) 100%);
     --bh:11;              /* band thickness (u) — overridden per book for variety */
     --vs:1;               /* vertical-title size multiplier (per book) */
     --tt:15%; --tb:56%;   /* enlarged 2nd panel holds the title (default 4-band spine) */
@@ -225,17 +230,22 @@
      Each varies the band thickness (--bh) and the gilt-line styling. A
      book carries one of these, so all its bands match; different books
      differ. Default (no class) = medium band with a gilt line on each edge. */
-  .book.band-wide { --bh:15; }              /* thicker band, gilt on both edges */
-  .book.band-skinny{ --bh:9;                /* thin band, one gilt line down the crest */
+  .book.band-wide { --bh:15; }              /* thicker band, gilt on both slopes */
+  .book.band-skinny{ --bh:9;                /* thin band, worn gilt along the crest */
     --bandimg:linear-gradient(180deg,
-      rgba(255,240,210,.30) 0 30%,
-      var(--gold-deep) 40%, var(--gold-bright) 50%, var(--gold-deep) 60%,
-      rgba(0,0,0,.46) 74% 100%); }
-  .book.band-bold { --bh:13;                /* wide band, one bold gilt line at the head */
+      rgba(0,0,0,.20) 0%,
+      rgba(255,240,210,.18) 26%,
+      rgba(214,172,90,.46) 50%,
+      rgba(0,0,0,.20) 76%,
+      rgba(0,0,0,.34) 100%); }
+  .book.band-bold { --bh:13;                /* wide band, gilt riding the head slope */
     --bandimg:linear-gradient(180deg,
-      var(--gold-deep) 0 17%,
-      rgba(255,240,210,.30) 25% 46%,
-      rgba(0,0,0,.26) 60%, rgba(0,0,0,.5) 100%); }
+      rgba(0,0,0,.18) 0%,
+      rgba(190,148,66,.55) 12%,
+      rgba(230,195,120,.30) 26%,
+      rgba(255,240,210,.14) 42%,
+      rgba(0,0,0,.18) 68%,
+      rgba(0,0,0,.38) 100%); }
 
   /* ── Per-book leather grain (subtly different spine textures) ─────── */
   .book.tex-fine   { --grain:repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, rgba(255,255,255,.014) 1px 2px); }
