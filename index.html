@@ -61,15 +61,15 @@
   /* the case: wooden frame + dark back panel that grounds the shelves */
   /* case width derives from the books (both rows total 676u), so the shelves
      are always full edge-to-edge: 676 content + 36 borders + 16 padding */
+  /* The case's horizontals are all boards: a top plank (lip facing down into
+     the interior), the mid shelf plank, and the bottom plank whose lip IS the
+     case's bottom edge. The frame gradient supplies only the side stiles. */
   .bookcase{ width:calc(728 * var(--u)); max-width:calc(100vw - 2rem);
     display:flex; flex-direction:column;
     gap:calc(26 * var(--u));
-    /* no bottom padding: the lowest shelf board sits ON the base rail, so
-       board + lip + rail read as one solid sill (no floating gap) */
-    padding:calc(30 * var(--u)) calc(8 * var(--u)) 0;
-    border:calc(18 * var(--u)) solid;
-    border-top-width:calc(14 * var(--u));
-    border-bottom-width:calc(26 * var(--u));
+    padding:0 calc(8 * var(--u)) calc(15 * var(--u));
+    border-style:solid;
+    border-width:0 calc(18 * var(--u));
     border-image:linear-gradient(180deg,#6b4726 0%,#4a2f1a 35%,#2a1a0d 100%) 1;
     background:
       linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,0) 12%),
@@ -127,10 +127,8 @@
     height:calc(15 * var(--u));
     background:linear-gradient(180deg,#241509,#150c04);
     box-shadow:0 10px 16px -8px rgba(0,0,0,.8); }
-  /* the lowest board is part of the case's base: its lip blends into the
-     rail below it rather than hovering over a gap */
-  .shelf:last-of-type .plank::after{ box-shadow:none;
-    background:linear-gradient(180deg,#241509,#1d1208); }
+  /* the case's ceiling: same board, lip shadowing down into the interior */
+  .plank--top{ margin-bottom:calc(12 * var(--u)); }
   .row::before{ content:""; position:absolute; left:5%; right:5%; bottom:-2px; height:16px;
     background:radial-gradient(60% 100% at 50% 0, rgba(0,0,0,.6), transparent 74%);
     filter:blur(3px); pointer-events:none; }
@@ -334,6 +332,7 @@
   </header>
 
   <main class="bookcase">
+    <div class="plank plank--top" aria-hidden="true"></div>
     <!-- Top shelf -->
     <section class="shelf" aria-label="Top shelf">
       <div class="row">
