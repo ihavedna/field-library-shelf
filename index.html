@@ -135,8 +135,14 @@
   /* the bottom board's lip ends the case, so it stays solid */
   .shelf:last-of-type .plank::after{ height:calc(15 * var(--u));
     background:linear-gradient(180deg,#241509,#150c04); }
-  /* the case's ceiling: same board, lip shadowing down into the interior */
-  .plank--top{ margin-bottom:calc(12 * var(--u)); }
+  /* the case's ceiling: nearest board to the lamp, so it's the lightest
+     wood in the case — its ramp starts at the stiles' crown tone so the
+     top corners meet seamlessly */
+  .plank--top{ margin-bottom:calc(12 * var(--u));
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,0) 5%, rgba(0,0,0,0) 95%, rgba(0,0,0,.45)),
+      repeating-linear-gradient(0deg, rgba(255,220,170,.04) 0 2px, rgba(0,0,0,.06) 2px 5px),
+      linear-gradient(180deg, #6b4726 0%, #4c3018 55%, #33200f 100%); }
   /* the case's floor: the bottom shelf's board IS the case's bottom — a
      single, slightly heavier board the books stand on; its lip ends the case */
   .shelf:last-of-type .plank{ height:calc(38 * var(--u)); }
