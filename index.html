@@ -71,9 +71,11 @@
     border-style:solid;
     border-width:0 calc(18 * var(--u));
     border-image:linear-gradient(180deg,#6b4726 0%,#4a2f1a 35%,#2a1a0d 100%) 1;
-    background:linear-gradient(180deg, #241509 0%, #190e06 100%);
+    /* the interior sits well behind the front-lit woodwork: a darker back
+       panel + a deep continuous inner vignette give the case its depth */
+    background:linear-gradient(180deg, #1d1108 0%, #140b04 100%);
     box-shadow:
-      inset 0 0 calc(44 * var(--u)) rgba(0,0,0,.55),
+      inset 0 0 calc(64 * var(--u)) rgba(0,0,0,.62),
       0 36px 64px -28px rgba(0,0,0,.9);
   }
   .shelf{ position:relative; }
@@ -126,10 +128,10 @@
      fades smoothly to nothing over the back panel — one continuous falloff,
      no seam where a separate drop-shadow would begin */
   .plank::after{ content:""; position:absolute; left:0; right:0; top:100%;
-    height:calc(46 * var(--u));
+    height:calc(64 * var(--u));
     background:linear-gradient(180deg,
-      #1a0e06 0, #120a04 20%,
-      rgba(14,8,3,.62) 48%, rgba(14,8,3,0) 100%); }
+      #190d05 0, #100903 16%,
+      rgba(11,6,2,.6) 44%, rgba(11,6,2,0) 100%); }
   /* the bottom board's lip ends the case, so it stays solid */
   .shelf:last-of-type .plank::after{ height:calc(15 * var(--u));
     background:linear-gradient(180deg,#241509,#150c04); }
